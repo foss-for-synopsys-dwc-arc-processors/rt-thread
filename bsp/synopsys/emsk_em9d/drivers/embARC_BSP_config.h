@@ -18,8 +18,11 @@ extern "C" {
 /**
  *  Toolchain Definition for MetaWare or GNU
  */
-//#define __MW__
+#ifdef __CCAC__
+#define __MW__
+#else
 #define __GNU__
+#endif
 
 /**
  *  Must be set.

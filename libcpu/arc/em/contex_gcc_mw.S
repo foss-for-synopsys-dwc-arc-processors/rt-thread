@@ -7,11 +7,11 @@
 #include "inc/arc/arc.h"
 #include "inc/arc/arc_asm_common.h"
 
-.global rt_interrupt_enter; .type rt_interrupt_enter, %function
-.global rt_interrupt_leave; .type rt_interrupt_leave, %function
-.global context_switch_reqflg; .type context_switch_reqflg, %object
-.global rt_interrupt_from_thread; .type rt_interrupt_from_thread, %object
-.global rt_interrupt_to_thread; .type rt_interrupt_to_thread, %object
+.global rt_interrupt_enter;
+.global rt_interrupt_leave;
+.global context_switch_reqflg;
+.global rt_interrupt_from_thread;
+.global rt_interrupt_to_thread;
 
 	.text
 	.align 4
@@ -29,8 +29,8 @@ dispatch_r:
 /*
  * rt_base_t rt_hw_interrupt_disable();
  */
-.global rt_hw_interrupt_disable
-.type rt_hw_interrupt_disable, %function
+	.global rt_hw_interrupt_disable
+	.align 4
 rt_hw_interrupt_disable:
  	clri r0
  	j [blink]
@@ -39,15 +39,15 @@ rt_hw_interrupt_disable:
 /*
  * void rt_hw_interrupt_enable(rt_base_t level);
  */
-.global rt_hw_interrupt_enable
-.type rt_hw_interrupt_enable, %function
+	.global rt_hw_interrupt_enable
+	.align 4
 rt_hw_interrupt_enable:
 	seti r0
 	j [blink]
 
 
-.global rt_hw_context_switch_interrupt
-.type rt_hw_context_switch_interrupt, %function
+	.global rt_hw_context_switch_interrupt
+	.align 4
 rt_hw_context_switch_interrupt:
 	st r0, [rt_interrupt_from_thread]
 	st r1, [rt_interrupt_to_thread]
@@ -61,8 +61,8 @@ rt_hw_context_switch_interrupt:
  * r0 --> from
  * r1 --> to
  */
-.global rt_hw_context_switch
-.type rt_hw_context_switch, %function
+	.global rt_hw_context_switch
+	.align 4
 rt_hw_context_switch:
 	SAVE_NONSCRATCH_REGS
 	mov r2, dispatch_r
@@ -74,15 +74,15 @@ rt_hw_context_switch:
  * void rt_hw_context_switch_to(rt_uint32 to);
  * r0 --> to
  */
-.global rt_hw_context_switch_to
-.type rt_hw_context_switch_to, %function
+	.global rt_hw_context_switch_to
+	.align 4
 rt_hw_context_switch_to:
 	ld sp, [r0]
 	pop r0
 	j [r0]
 
-.global start_r
-.type start_r, %function
+	.global start_r
+	.align 4
 start_r:
 	pop blink;
 	pop r1

@@ -43,9 +43,26 @@ Please refer [EMSK configuration](https://embarc.org/embarc_osp/doc/build/html/b
 
 ### Toolchain
 
+Now both GNU and MetaWare Toolchain are supported, set the System environment variable RTT_CC select the toolchain.
+
+GNU:
+
+    set RTT_CC=gnu
+
+MetaWare:
+
+    set RTT_CC=mw
+
+#### GNU
+
 The ARC GNU Toolchain offers all of the benefits of open source tools, including complete source code and a large install base. The ARC GNU IDE Installer consists of Eclipse IDE with [ARC GNU plugin for Eclipse](https://github.com/foss-for-synopsys-dwc-arc-processors/arc_gnu_eclipse/releases), [ARC GNU prebuilt toolchain](https://github.com/foss-for-synopsys-dwc-arc-processors/toolchain/releases) and [OpenOCD for ARC](https://github.com/foss-for-synopsys-dwc-arc-processors/openocd>)
 
-Here, the ARC GNU toolchain is installed to `c:\arc\gnu`. If not, please change the path configuration in rtconfig.py.
+Here, the ARC GNU toolchain is installed to `c:\arc_gnu`. If not, please change the path configuration in rtconfig.py.
+
+#### MetaWare
+The [DesignWare ARC MetaWare Development Toolkit](https://www.synopsys.com/dw/ipdir.php?ds=sw_metaware) builds on a long legacy of industry-leading compiler and debugger products for embedded applications. It is a complete solution that contains all the components needed to support the development, debugging, and tuning of embedded applications for the DesignWare® ARC® processors.
+
+Here, the ARC MetaWare toolchain is installed to `C:\ARC\MetaWare`. If not, please change the path configuration in rtconfig.py.
 
 ### Compile
 
@@ -56,11 +73,21 @@ please run the following cmds to compile
 
 ## Debug
 
-You need to  install [Zadig](http://zadig.akeo.ie) to replace the default FTDI driver with WinUSB driver. See [How to Use OpenOCD on Windows](https://github.com/foss-for-synopsys-dwc-arc-processors/arc_gnu_eclipse/wiki/How-to-Use-OpenOCD-on-Windows>) for more information.
+### GNU
+
+You need to install [Zadig](http://zadig.akeo.ie) to replace the default FTDI driver with WinUSB driver. See [How to Use OpenOCD on Windows](https://github.com/foss-for-synopsys-dwc-arc-processors/arc_gnu_eclipse/wiki/How-to-Use-OpenOCD-on-Windows>) for more information.
 
 After compile, please use the following cmds to debug
 
     scons  --gdb
+
+### MetaWare
+
+If you have replace the default FTDI driver with WinUSB driver, please uninstall it.
+
+After compile, please use the following cmds to debug
+
+    scons  --mdb
 
 
 ## Supported Drivers
