@@ -139,5 +139,7 @@
 // </section>
 // </RDTConfigurator>
 
+#define RT_USING_CPU_FFS
+
 
 #endif

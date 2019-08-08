@@ -119,7 +119,7 @@ _arc_reset_stage2:
 #endif
 
 /* init stack */
-#if ARC_FEATURE_RGF_BANKED_REGS >= 16 && ARC_FEATURE_RGF_BANKED_REGS > 1 && ARC_FEATURE_FIRQ == 1
+#if ARC_FEATURE_RGF_BANKED_REGS >= 16 && ARC_FEATURE_FIRQ == 1
 #if _STACKSIZE < 512
 #error "not enough stack size for irq and firq"
 #endif
@@ -130,17 +130,15 @@ _arc_reset_stage2:
 	or      r0, r0, 0x10000
 	kflag   r0
 /* set sp, gp, fp in bank1 */
-	mov     sp, _e_stack
+	mov     sp, _f_stack+256
 	mov     gp, _f_sdata
 	mov     fp, 0
 /* come back to bank0 */
 	lr      r0, [AUX_STATUS32]
 	bic     r0, r0, 0x70000
 	kflag   r0
-	mov	sp, _e_stack-256
-#else
-	mov	sp, _e_stack	/* init stack pointer */
 #endif
+	mov	sp, _e_stack	/* init stack pointer */
 	mov	gp, _f_sdata	/* init small-data base register */
 	mov	fp, 0		/* init fp register */
 

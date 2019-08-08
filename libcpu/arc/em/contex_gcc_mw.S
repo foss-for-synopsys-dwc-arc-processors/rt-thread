@@ -92,6 +92,19 @@ start_r:
 	j_s.d [r1]
 	kflag r2
 
+/*
+ * int __rt_ffs(int value);
+ * r0 --> value
+ */
+	.global __rt_ffs
+	.align 4
+__rt_ffs:
+	breq r0, 0, __rt_ffs_return
+	ffs r1, r0
+	add r0, r1, 1
+__rt_ffs_return:
+	j [blink]
+
 /****** exceptions and interrupts handing ******/
 /****** entry for exception handling ******/
 	.global exc_entry_cpu
@@ -106,8 +119,7 @@ exc_entry_cpu:
 	ld	r0, [exc_nest_count]
 	add	r1, r0, 1
 	st	r1, [exc_nest_count]
-	cmp	r0, 0
-	bne	exc_handler_1
+	brne	r0, 0, exc_handler_1
 /* change to exception stack if interrupt happened in task context */
 	mov	sp, _e_stack
 exc_handler_1:
@@ -127,13 +139,13 @@ ret_exc:
 	mov	r1, exc_nest_count
 	ld	r0, [r1]
 	sub	r0, r0, 1
-	cmp	r0, 0
-	bne.d	ret_exc_1
 	st	r0, [r1]
+	brne	r0, 0, ret_exc_1 /* nest exception case */
+	lr	r1, [AUX_IRQ_ACT] /* nest interrupt case */
+	brne	r1, 0, ret_exc_1
 
 	ld	r0, [context_switch_reqflg]
-	cmp	r0, 0
-	bne	ret_exc_2
+	brne	r0, 0, ret_exc_2
 ret_exc_1:	/* return from non-task context, interrupts or exceptions are nested */
 	EXCEPTION_EPILOGUE
 	rtie
@@ -196,8 +208,7 @@ exc_entry_int:
 	st	r2, [exc_nest_count]
 	seti	/* enable higher priority interrupt */
 
-	cmp	r3, 0
-	bne	irq_handler_1
+	brne	r3, 0, irq_handler_1
 /* change to exception stack if interrupt happened in task context */
 	mov	sp, _e_stack
 irq_handler_1:
@@ -228,13 +239,17 @@ ret_int:
 	mov	r1, exc_nest_count
 	ld	r0, [r1]
 	sub	r0, r0, 1
-	cmp	r0, 0
-	bne.d	ret_int_1
 	st	r0, [r1]
+/* if there are multi-bits set in IRQ_ACT, it's still in nest interrupt */
+	lr	r0, [AUX_IRQ_CAUSE]
+	sr	r0, [AUX_IRQ_SELECT]
+	lr 	r3, [AUX_IRQ_PRIORITY]
+	lr	r1, [AUX_IRQ_ACT]
+	bclr	r2, r1, r3
+	brne	r2, 0, ret_int_1
 
 	ld	r0, [context_switch_reqflg]
-	cmp	r0, 0
-	bne	ret_int_2
+	brne	r0, 0, ret_int_2
 ret_int_1:	/* return from non-task context */
 	INTERRUPT_EPILOGUE
 	rtie

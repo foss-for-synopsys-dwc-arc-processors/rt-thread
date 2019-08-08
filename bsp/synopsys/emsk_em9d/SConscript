@@ -8,7 +8,7 @@ list = os.listdir(cwd)
 
 ASFLAGS = ' -I' + cwd
 
-objs = objs + SConscript(os.path.join(cwd, '../embarc/SConscript'))
+objs = objs + SConscript(os.path.join(cwd, '../embarc/SConscript'), variant_dir='build/embarc', duplicate=0)
 
 for d in list:
     path = os.path.join(cwd, d)
