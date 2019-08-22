@@ -8,7 +8,7 @@
 #include "inc/arc/arc_exception.h"
 
 /* enable interrupt and set interrupt priority mask */
-#define ARC_INIT_STATUS (AUX_STATUS_MASK_IE | ((-1 - INT_PRI_MIN) << 1))
+#define ARC_INIT_STATUS (AUX_STATUS_MASK_IE | ((-1 - INT_PRI_MIN) << 1) | STATUS32_RESET_VALUE)
 
 
 extern void start_r(void);
